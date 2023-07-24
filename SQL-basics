@@ -1,0 +1,86 @@
+"This is the script we worked on in 24/Jul/2023 lecture"
+"Create another database in order to fully recreate the lecture"
+
+DROP SCHEMA IF EXISTS course; 
+CREATE SCHEMA course;
+USE sys; 
+
+CREATE TABLE teacher(
+	id INT NOT NULL AUTO_INCREMENT, 
+	teacher VARCHAR(255), 
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE course(
+	course VARCHAR(255), 
+	hours INT, 
+	classroom VARCHAR(255)
+	vacations VARCHAR(255),
+	teacher_id INT NOT NULL, 
+	PRIMARY KEY (course), 
+	FOREIGN KEY (teacher_id) REFERENCES teacher(id)
+);
+
+INSERT INTO teacher(teacher) VALUES
+('Alberto Garcia'), 
+('Beatriz Lopez'), 
+('Carmen Martin');
+
+INSERT INTO course(course, hours, classroom, vacations, teacher_id) VALUES 
+('Math', 100, 'A1', '2 weeks', 1), 
+('Programming', 150, 'B1', '3 weeks', 2), 
+('Computer Science', 150, 'B1', '3 weeks', 2), 
+('English', 90, 'A2', '1 week', 1),
+('Physics', 200, 'C1', '3 weeks', 1),
+('Chemistry', 120, 'Lab1', '2 weeks', 3); 
+
+
+
+
+"============QUERIES=============="
+
+SELECT * FROM teacher; 
+SELECT * FROM course; 
+
+SELECT * FROM course ORDER BY hours; 
+SELECT * FROM course ORDER BY hours DESC; 
+SELECT * FROM course ORDER BY hours DESC LIMIT 2;
+
+SELECT course , hours FROM course; 
+SELECT course, hourse from course WHERE hours BETWEEN  100 AND 200; 
+
+
+SELECT * FROM course WHERE classroom = 'B1'; 
+SELECT * FROM course WHERE classroom LIKE '_1'; "_ represents ANY SINGLE character";
+SELECT * FROM course WHERE classroom LIKE '%1'; 
+SELECT * FROM course WHERE course LIKE '%p%';
+
+
+"=================AGGREGATION QUERIES============="
+
+SELECT classroom FROM course; 
+SELECT COUNT(classroom)	AS classrooms FROM course;
+SELECT DISTINCT classroom FROM course; 
+SELECT COUNT(DISTINCT classroom) AS different_classrooms FROM course;  
+
+SELECT SUM(hours) AS total_contact_hours FROM course; 
+SELECT sum(hours) as total_hours FROM course WHERE teacher_id = 1; 
+
+SELECT teacher_id, sum(hours) as total_hours from course group by teacher_id; 
+
+SELECT teacher_id, sum(hours) as total_hours from course group by teacher_id HAVING total_hours > 200;
+
+
+"============INNER JOINS============"
+
+SELECT * FROM course c JOIN teacher t  ON c.teacher_id  = t.id; 
+
+select t.teacher, Sum(c.hours) as total_hours
+from course c
+join teacher t on c.teacher_id = t.id
+group by t.teacher; 
+
+
+
+
+
